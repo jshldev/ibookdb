@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import NoImage from "../../assets/no-image.png";
-import { Link } from "react-router-dom";
 
-function CreateBook() {
+function EditBook() {
   const baseURL = import.meta.env.VITE_SERVER_URL;
   const apiURL = `${baseURL}/api/books/`;
   //   const baseURL = "http://localhost:8000/api/books/";
   //   console.log(import.meta.env.VITE_SERVER_URL);
+  const urlSLUG = useParams();
+  const goURL = `${apiURL}${urlSLUG.slug}`;
+
+  const [bookID, setBookID] = useState("");
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [stars, setStars] = useState(0);
@@ -17,26 +21,62 @@ function CreateBook() {
   const [language, setLanguage] = useState("");
   const [cover, setCover] = useState(null);
   const [submitted, setSubmitted] = useState("");
-  const [image, setImage] = useState(NoImage);
+  const [image, setImage] = useState("");
 
-  const createBook = async (e) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(goURL);
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch data.");
+        }
+        const data = await response.json();
+        setBookID(data._id);
+        setTitle(data.title);
+        setSlug(data.slug);
+        setStars(data.stars);
+        setDescription(data.description);
+        setGenres(data.genres);
+        setAuthor(data.author);
+        setPublishYear(data.publishYear);
+        setLanguage(data.language);
+        setCover(data.cover);
+        setData(data);
+        setIsLoading(false);
+        console.log(data.stars);
+        setStars(data.stars);
+      } catch (error) {
+        console.log(error);
+        setError("Error when fetching data.");
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const updateBook = async (e) => {
     e.preventDefault();
     console.table([title, slug, author, publishYear, language, cover, image]);
 
     const formData = new FormData();
+    formData.append("bookID", bookID);
     formData.append("title", title);
     formData.append("slug", slug);
     formData.append("stars", stars);
     formData.append("description", description);
     formData.append("genres", genres);
-    formData.append("cover", cover);
     formData.append("author", author);
     formData.append("publishYear", publishYear);
     formData.append("language", language);
 
+    if (cover) {
+      formData.append("cover", cover);
+    }
+
     try {
       const response = await fetch(apiURL, {
-        method: "POST",
+        method: "PUT",
         body: formData,
       });
 
@@ -53,6 +93,7 @@ function CreateBook() {
       // });
 
       if (response.ok) {
+        setBookID("");
         setTitle("");
         setSlug("");
         setStars(0);
@@ -89,18 +130,23 @@ function CreateBook() {
 
   return (
     <div>
-      <h1>Create New Book</h1>
+      <h1>Edit a Book</h1>
       <Link to={"/books"} className="linkButton">
         ↩ Back
       </Link>
       {submitted ? (
-        <p>Create New Book Successfully!</p>
+        <p>Update Book Successfully!</p>
       ) : (
-        <form className="bookdetails" onSubmit={createBook}>
+        <form className="bookdetails" onSubmit={updateBook}>
           <div className="col-1">
             <label>Upload a Book Cover:</label>
             <br></br>
-            <img src={image} alt="cover image" />
+            {image ? (
+              <img src={image} alt="cover image" />
+            ) : (
+              <img src={`${baseURL}/covers/${cover}`} alt="cover image" />
+            )}
+
             <input
               onChange={onImageChange}
               type="file"
@@ -174,7 +220,7 @@ function CreateBook() {
             </div>
 
             <button type="submit" className="button-19">
-              Add New Book
+              Update the Book
             </button>
           </div>
         </form>
@@ -182,4 +228,4 @@ function CreateBook() {
     </div>
   );
 }
-export default CreateBook;
+export default EditBook;

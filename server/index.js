@@ -111,6 +111,55 @@ app.post("/api/books/", upload.single("cover"), async (req, res) => {
   }
 });
 
+//Edit a book
+app.put("/api/books/", upload.single("cover"), async (req, res) => {
+  try {
+    const bookID = req.body.bookID;
+    // const {
+    //   title,
+    //   slug,
+    //   description,
+    //   stars,
+    //   author,
+    //   publishYear,
+    //   genres,
+    //   language,
+    // } = req.body;
+    console.log(req.body);
+    console.log(req.file);
+    const book = {
+      title: req.body.title,
+      slug: req.body.slug,
+      description: req.body.description,
+      stars: req.body.stars,
+      author: req.body.author,
+      publishYear: req.body.publishYear,
+      genres: req.body.genres,
+      language: req.body.language,
+    };
+    if (req.file) {
+      book.cover = req.file.filename;
+    }
+    // const data = await Notes.create({
+    //   title,
+    //   slug,
+    //   description,
+    //   stars,
+    //   author,
+    //   publishYear,
+    //   genres,
+    //   language,
+    // });
+    const data = await Books.findByIdAndUpdate(bookID, book);
+    if (!data) {
+      throw new Error("An error occured while updating a book.");
+    }
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ error: "An error occured while updating a book." });
+  }
+});
+
 app.get("/", (req, res) => {
   res.json("hello");
 });

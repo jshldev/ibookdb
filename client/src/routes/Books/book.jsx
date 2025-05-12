@@ -40,14 +40,18 @@ function Book() {
     <div>
       <h2>Book</h2>
       {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
-      <Link to={"/books"}>↩ Back</Link>
       <div className="bookdetails">
         <div className="col-1">
+          <Link to={"/books"} className="linkButton">
+            ↩ Back
+          </Link>
           <img src={`${baseURL}/covers/${data?.cover}`} alt={data?.title} />
-          <Link to={`/editbook/${data.slug}`}>🖍 Edit</Link>
+          <Link to={`/editbook/${data.slug}`} className="linkButton">
+            🖍 Edit
+          </Link>
         </div>
 
-        <div className="col-2">
+        <div className="col-2 bookPage">
           <h1>{data?.title}</h1>
           <p>Author: {data?.author}</p>
           <p>Description: {data?.description}</p>

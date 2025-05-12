@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import Books from "./routes/Books/books";
 import Book from "./routes/Books/book";
 import CreateBook from "./routes/Books/createBook";
+import EditBook from "./routes/Books/editBook";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/books" element={<Books />}></Route>
           <Route path="/books/:slug" element={<Book />}></Route>
           <Route path="/createbook" element={<CreateBook />}></Route>
+          <Route path="/editbook/:slug" element={<EditBook />}></Route>
           <Route path="/about" element={<About />}></Route>
         </Routes>
         <Footer />

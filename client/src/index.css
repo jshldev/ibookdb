@@ -157,13 +157,19 @@ img {
 .bookdetails {
   display: flex;
   gap: 20px;
+  justify-content: center;
 }
 
 .col-1 {
   width: 30%;
 }
 .col-2 {
-  width: 60%;
+  width: 50%;
+}
+.col-2.bookPage {
+  border: 1.5px solid rgb(175, 214, 219);
+  border-radius: 30px;
+  padding: 0 30px 0 30px;
 }
 .col-1 img {
   width: 100%;
@@ -187,3 +193,8 @@ img {
 /* .filters {
   text-align: center;
 } */
+
+.linkButton {
+  font-size: 1.6rem;
+  /* font-weight: bold; */
+}

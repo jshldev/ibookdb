@@ -39,7 +39,9 @@ function Books() {
   return (
     <div>
       <h2>Books</h2>
-      <Link to="/createbook">Create New Book</Link>
+      <Link to="/createbook" className="linkButton">
+        Create New Book
+      </Link>
       {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
       <div className="filters">
         <label>Genres</label>
