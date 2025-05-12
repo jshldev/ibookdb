@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Stars from "./stars";
 
 function Book() {
@@ -9,10 +9,12 @@ function Book() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [bookID, setBookID] = useState("");
   const [stars, setStars] = useState("");
   const urlSLUG = useParams();
   const goURL = `${apiURL}${urlSLUG.slug}`;
   console.log(goURL);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,6 +25,7 @@ function Book() {
           throw new Error("Failed to fetch data.");
         }
         const data = await response.json();
+        setBookID(data._id);
         setData(data);
         setIsLoading(false);
         console.log(data.stars);
@@ -35,6 +38,23 @@ function Book() {
     };
     fetchData();
   }, []);
+
+  const deleteBook = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(apiURL + bookID, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        setBookID("");
+        navigate("/");
+      }
+    } catch (error) {
+      console.log("Failed to delete data.");
+    }
+  };
 
   return (
     <div>
@@ -49,6 +69,10 @@ function Book() {
           <Link to={`/editbook/${data.slug}`} className="linkButton">
             🖍 Edit
           </Link>
+          <br></br>
+          <button onClick={deleteBook} className="button-24">
+            ❌Delete This Book
+          </button>
         </div>
 
         <div className="col-2 bookPage">

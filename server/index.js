@@ -160,6 +160,22 @@ app.put("/api/books/", upload.single("cover"), async (req, res) => {
   }
 });
 
+//Delete a book by ID
+app.delete("/api/books/:id", async (req, res) => {
+  try {
+    const bookID = req.params.id;
+
+    // const data = await Books.findByIdAndDelete(bookID);
+    const data = await Books.deleteOne({ _id: bookID });
+    if (!data) {
+      throw new Error("An error occured while deleting a book.");
+    }
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ error: "An error occured while deleting a book." });
+  }
+});
+
 app.get("/", (req, res) => {
   res.json("hello");
 });

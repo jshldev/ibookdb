@@ -18,9 +18,26 @@ function CreateBook() {
   const [cover, setCover] = useState(null);
   const [submitted, setSubmitted] = useState("");
   const [image, setImage] = useState(NoImage);
+  const [titleLabel, setTitleLabel] = useState("");
+  const [slugLabel, setSlugLabel] = useState("");
 
   const createBook = async (e) => {
     e.preventDefault();
+    title.trim() === ""
+      ? setTitleLabel("*(This field is required)")
+      : setTitleLabel("");
+    slug.trim() === ""
+      ? setSlugLabel("*(This field is required)")
+      : setSlugLabel("");
+    if (title.trim() === "" || slug.trim() === "") {
+      return;
+    }
+    // if (title.trim() === "" || slug.trim() === "") {
+    //   setTitleLabel("Title (This field is required)");
+    //   setSlugLabel("URL Slug (This field is required)");
+    //   console.log("need slug");
+    //   return;
+    // }
     console.table([title, slug, author, publishYear, language, cover, image]);
 
     const formData = new FormData();
@@ -109,7 +126,8 @@ function CreateBook() {
           </div>
           <div className="col-2">
             <div>
-              <label>Title</label>
+              <label>Title</label>{" "}
+              <label className="redLabel">{titleLabel}</label>
               <input
                 type="text"
                 value={title}
@@ -118,7 +136,8 @@ function CreateBook() {
             </div>
 
             <div>
-              <label>URL Slug</label>
+              <label>URL Slug</label>{" "}
+              <label className="redLabel">{slugLabel}</label>
               <input
                 type="text"
                 value={slug}
