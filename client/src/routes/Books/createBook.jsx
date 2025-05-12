@@ -95,7 +95,8 @@ function CreateBook() {
       ) : (
         <form className="bookdetails" onSubmit={createBook}>
           <div className="col-1">
-            <label>Upload Cover</label>
+            <label>Upload a Book Cover:</label>
+            <br></br>
             <img src={image} alt="cover image" />
             <input
               onChange={onImageChange}
@@ -165,11 +166,13 @@ function CreateBook() {
             </div>
 
             <div>
-              <label>Genres (seperate with ,)</label>
+              <label>Genres (seperate with , )</label>
               <input type="text" value={genres} onChange={handleGenresChange} />
             </div>
 
-            <button type="submit">Add New Book</button>
+            <button type="submit" className="button-19">
+              Add New Book
+            </button>
           </div>
         </form>
       )}

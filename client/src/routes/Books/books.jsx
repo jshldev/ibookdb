@@ -38,7 +38,7 @@ function Books() {
 
   return (
     <div>
-      Books
+      <h2>Books</h2>
       <Link to="/createbook">Create New Book</Link>
       {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
       <div className="filters">
