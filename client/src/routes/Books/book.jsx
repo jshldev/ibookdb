@@ -44,12 +44,13 @@ function Book() {
       <div className="bookdetails">
         <div className="col-1">
           <img src={`${baseURL}/covers/${data?.cover}`} alt={data?.title} />
+          <Link to={`/editbook/${data.slug}`}>🖍 Edit</Link>
         </div>
 
         <div className="col-2">
           <h1>{data?.title}</h1>
           <p>Author: {data?.author}</p>
-          <p>{data?.description}</p>
+          <p>Description: {data?.description}</p>
           <span>Stars: {stars}/5 </span>
           <Stars stars={stars} />
           {/* ⭐☆★ ✰☆*/}

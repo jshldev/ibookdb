@@ -3,6 +3,7 @@ const cors = require("cors");
 const express = require("express");
 const connectDB = require("./connectDB");
 const Books = require("./models/Books");
+const multer = require("multer");
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -35,7 +36,7 @@ app.get("/api/books", async (req, res) => {
   }
 });
 
-//fetch note by URL SLUG
+//fetch book by URL SLUG
 app.get("/api/books/:slug", async (req, res) => {
   try {
     const bookSLUG = req.params.slug;
@@ -47,6 +48,66 @@ app.get("/api/books/:slug", async (req, res) => {
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({ error: "An error occured while fetching book." });
+  }
+});
+
+//Create a book
+//multer for upload image
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "covers/");
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+//Create a book
+app.post("/api/books/", upload.single("cover"), async (req, res) => {
+  try {
+    // const {
+    //   title,
+    //   slug,
+    //   description,
+    //   stars,
+    //   author,
+    //   publishYear,
+    //   genres,
+    //   language,
+    // } = req.body;
+    console.log(req.body);
+    console.log(req.file);
+    const book = new Books({
+      title: req.body.title,
+      slug: req.body.slug,
+      description: req.body.description,
+      stars: req.body.stars,
+      author: req.body.author,
+      publishYear: req.body.publishYear,
+      genres: req.body.genres,
+      language: req.body.language,
+      cover: req.file ? req.file.filename : "no-image.png",
+    });
+    // const data = await Notes.create({
+    //   title,
+    //   slug,
+    //   description,
+    //   stars,
+    //   author,
+    //   publishYear,
+    //   genres,
+    //   language,
+    // });
+    const data = await Books.create(book);
+    if (!data) {
+      throw new Error("An error occured while creating a book.");
+    }
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ error: "An error occured while creating a book." });
   }
 });
 
