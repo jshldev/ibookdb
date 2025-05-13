@@ -1,9 +1,12 @@
 require("dotenv").config();
+// import { format } from "date-fns";
+
 const cors = require("cors");
 const express = require("express");
 const connectDB = require("./connectDB");
 const Books = require("./models/Books");
 const multer = require("multer");
+const datefns = require("date-fns");
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -78,6 +81,9 @@ app.post("/api/books/", upload.single("cover"), async (req, res) => {
     //   genres,
     //   language,
     // } = req.body;
+    const now = new Date(Date.now());
+    console.log(datefns.format(now, "yyyy-MM-dd h:mm:ss a"));
+
     console.log(req.body);
     console.log(req.file);
     const book = new Books({
@@ -90,6 +96,8 @@ app.post("/api/books/", upload.single("cover"), async (req, res) => {
       genres: req.body.genres,
       language: req.body.language,
       cover: req.file ? req.file.filename : "no-image.png",
+      createDate: Date.now(),
+      // createDate: datefns.format(now, "yyyy-MM-dd h:mm:ss a"),
     });
     // const data = await Notes.create({
     //   title,

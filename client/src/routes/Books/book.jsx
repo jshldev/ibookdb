@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Stars from "./stars";
+import { format } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
+
+// const datefns = require("date-fns");
 
 function Book() {
   const baseURL = import.meta.env.VITE_SERVER_URL;
@@ -11,6 +15,7 @@ function Book() {
   const [error, setError] = useState(null);
   const [bookID, setBookID] = useState("");
   const [stars, setStars] = useState("");
+  const [lastModify, setLastModify] = useState("");
   const urlSLUG = useParams();
   const goURL = `${apiURL}${urlSLUG.slug}`;
   console.log(goURL);
@@ -30,6 +35,14 @@ function Book() {
         setIsLoading(false);
         console.log(data.stars);
         setStars(data.stars);
+        // setLastModify(
+        //   formatInTimeZone(
+        //     data.createDate,
+        //     "Asia/Hong_Kong",
+        //     "yyyy-MM-dd HH:mm:ss zzz"
+        //   )
+        // );
+        setLastModify(format(data.createDate, "yyyy-MM-dd HH:mm:ss O"));
       } catch (error) {
         console.log(error);
         setError("Error when fetching data.");
@@ -38,6 +51,7 @@ function Book() {
     };
     fetchData();
   }, []);
+  // console.log(lastModify);
 
   const deleteBook = async (e) => {
     e.preventDefault();
@@ -90,6 +104,8 @@ function Book() {
               <li key={index}>{genre}</li>
             ))}
           </ul>
+          {/* formatInTimeZone(date, 'Asia/Hong_Kong', 'yyyy-MM-dd HH:mm:ss zzz') */}
+          <p>Last Modified: {lastModify}</p>
         </div>
       </div>
     </div>
