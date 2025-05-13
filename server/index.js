@@ -1,5 +1,6 @@
 require("dotenv").config();
 // import { format } from "date-fns";
+// import { v2 as cloudinary } from "cloudinary";
 
 const cors = require("cors");
 const express = require("express");
@@ -7,6 +8,7 @@ const connectDB = require("./connectDB");
 const Books = require("./models/Books");
 const multer = require("multer");
 const datefns = require("date-fns");
+const cloudinary = require("./cloudinary");
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -62,6 +64,7 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    // cb(null, uniqueSuffix + "-" + file.originalname);
     cb(null, uniqueSuffix + "-" + file.originalname);
   },
 });
@@ -81,6 +84,18 @@ app.post("/api/books/", upload.single("cover"), async (req, res) => {
     //   genres,
     //   language,
     // } = req.body;
+    const uploadResult = await cloudinary.uploader
+      .upload(req.file.path, {
+        public_id: req.file.filename.replace(req.file.originalname, "cover"),
+        folder: "ibookdb-covers",
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    console.log(uploadResult);
+    console.log(uploadResult.url);
+
     const now = new Date(Date.now());
     console.log(datefns.format(now, "yyyy-MM-dd h:mm:ss a"));
 
@@ -95,7 +110,8 @@ app.post("/api/books/", upload.single("cover"), async (req, res) => {
       publishYear: req.body.publishYear,
       genres: req.body.genres,
       language: req.body.language,
-      cover: req.file ? req.file.filename : "no-image.png",
+      // cover: req.file ? req.file.filename : "no-image.png",
+      cover: req.file ? uploadResult.url : "no-image.png",
       createDate: Date.now(),
       // createDate: datefns.format(now, "yyyy-MM-dd h:mm:ss a"),
     });
@@ -133,6 +149,15 @@ app.put("/api/books/", upload.single("cover"), async (req, res) => {
     //   genres,
     //   language,
     // } = req.body;
+    const uploadResult = await cloudinary.uploader
+      .upload(req.file.path, {
+        public_id: req.file.filename.replace(req.file.originalname, "cover"),
+        folder: "ibookdb-covers",
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
     console.log(req.body);
     console.log(req.file);
     const book = {
@@ -146,7 +171,8 @@ app.put("/api/books/", upload.single("cover"), async (req, res) => {
       language: req.body.language,
     };
     if (req.file) {
-      book.cover = req.file.filename;
+      // book.cover = req.file.filename;
+      book.cover = uploadResult.url;
     }
     // const data = await Notes.create({
     //   title,
@@ -198,4 +224,42 @@ app.get(/(.*)/, (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server is running on Port: ${PORT}`);
+});
+
+(async function () {
+  // Configuration
+  // cloudinary.config({
+  //   cloud_name: "dxmcu2wdw",
+  //   api_key: "114529579145627",
+  //   api_secret: "irRtBz8ZS0WqhMsR59erghZxD6c", // Click 'View API Keys' above to copy your API secret
+  // });
+  // Upload an image
+  const uploadResult = await cloudinary.uploader
+    .upload("./covers/no-image.png", {
+      public_id: "my-no-image",
+      folder: "ibookdb-covers",
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+  console.log(uploadResult);
+
+  // Optimize delivery by resizing and applying auto-format and auto-quality
+  const optimizeUrl = cloudinary.url("my-no-image", {
+    fetch_format: "auto",
+    quality: "auto",
+  });
+
+  console.log(optimizeUrl);
+
+  // Transform the image: auto-crop to square aspect_ratio
+  const autoCropUrl = cloudinary.url("my-no-image", {
+    crop: "auto",
+    gravity: "auto",
+    width: 500,
+    height: 500,
+  });
+
+  console.log(autoCropUrl);
 });

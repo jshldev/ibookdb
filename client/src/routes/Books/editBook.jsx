@@ -144,7 +144,8 @@ function EditBook() {
             {image ? (
               <img src={image} alt="cover image" />
             ) : (
-              <img src={`${baseURL}/covers/${cover}`} alt="cover image" />
+              // <img src={`${baseURL}/covers/${cover}`} alt="cover image" />
+              <img src={cover} alt="cover image" />
             )}
 
             <input

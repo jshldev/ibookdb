@@ -66,7 +66,8 @@ function Books() {
           {data.map((book) => (
             <li key={book._id}>
               <Link to={`/books/${book.slug}`}>
-                <img src={`${baseURL}/covers/${book.cover}`} alt={book.title} />
+                {/* <img src={`${baseURL}/covers/${book.cover}`} alt={book.title} /> */}
+                <img src={book.cover} alt={book.title} />
                 <h4>{book.title}</h4>
               </Link>
             </li>

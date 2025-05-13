@@ -79,7 +79,8 @@ function Book() {
           <Link to={"/books"} className="linkButton">
             ↩ Back
           </Link>
-          <img src={`${baseURL}/covers/${data?.cover}`} alt={data?.title} />
+          {/* <img src={`${baseURL}/covers/${data?.cover}`} alt={data?.title} /> */}
+          <img src={data?.cover} alt={data?.title} />
           <Link to={`/editbook/${data.slug}`} className="linkButton">
             🖍 Edit
           </Link>
