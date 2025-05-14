@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import Stars from "./stars";
 import { format } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
+import NoImage from "../../assets/no-image.png";
 
 // const datefns = require("date-fns");
 
@@ -80,10 +81,7 @@ function Book() {
             ↩ Back
           </Link>
           {/* <img src={`${baseURL}/covers/${data?.cover}`} alt={data?.title} /> */}
-          <img
-            src={data.cover ? data.cover : "../src/assets/no-image.png"}
-            alt={data?.title}
-          />
+          <img src={data.cover ? data.cover : NoImage} alt={data?.title} />
           <Link to={`/editbook/${data.slug}`} className="linkButton">
             🖍 Edit
           </Link>
