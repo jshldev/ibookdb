@@ -78,7 +78,7 @@ function EditBook() {
 
     console.table([title, slug, author, publishYear, language, cover, image]);
 
-    let coverImageURL = "";
+    let coverImageURL = cover;
     // if (cover) {
     //   coverImageURL = cover;
     // }
@@ -107,12 +107,19 @@ function EditBook() {
     formData.append("slug", slug);
     formData.append("stars", stars);
     formData.append("description", description);
-    formData.append("genres", genres);
+    // formData.append("genres", genres);
+    //formData不能直接傳送array
+    genres.forEach((genre) => {
+      formData.append("genres[]", genre);
+    });
     formData.append("author", author);
     formData.append("publishYear", publishYear);
     formData.append("language", language);
-
-    formData.append("coverURL", coverImageURL); // 使用從 Cloudinary 獲取的 URL //Thank you Grok!
+    if (cover !== "") {
+      formData.append("coverURL", cover);
+    } else {
+      formData.append("coverURL", coverImageURL); // 使用從 Cloudinary 獲取的 URL //Thank you Grok!
+    }
     // if (cover) {
     //   formData.append("cover", cover);
     // }

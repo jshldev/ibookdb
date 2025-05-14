@@ -7,7 +7,7 @@ function Home() {
     <div>
       <h2>home page</h2>
       {/* <Books /> */}
-      <Upload />
+      {/* <Upload /> */}
     </div>
   );
 }
