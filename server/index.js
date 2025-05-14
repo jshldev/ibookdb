@@ -84,18 +84,6 @@ app.post("/api/books/", upload.single("cover"), async (req, res) => {
     //   genres,
     //   language,
     // } = req.body;
-    const uploadResult = await cloudinary.uploader
-      .upload(req.file.path, {
-        public_id: req.file.filename.replace(req.file.originalname, "cover"),
-        folder: "ibookdb-covers",
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    console.log(uploadResult);
-    console.log(uploadResult.url);
-    console.log(uploadResult.url);
 
     const now = new Date(Date.now());
     console.log(datefns.format(now, "yyyy-MM-dd h:mm:ss a"));
@@ -112,10 +100,36 @@ app.post("/api/books/", upload.single("cover"), async (req, res) => {
       genres: req.body.genres,
       language: req.body.language,
       // cover: req.file ? req.file.filename : "no-image.png",
-      cover: req.file ? uploadResult.url : "no-image.png",
+
+      // cover: req.file
+      //   ? uploadResult.url
+      //   : "https://res.cloudinary.com/dxmcu2wdw/image/upload/v1747161472/no-image.png",
+
       createDate: Date.now(),
       // createDate: datefns.format(now, "yyyy-MM-dd h:mm:ss a"),
     });
+
+    // const uploadResult = null;
+
+    if (req.file) {
+      const uploadResult = await cloudinary.uploader
+        .upload(req.file.path, {
+          public_id: req.file.filename.replace(req.file.originalname, "cover"),
+          folder: "ibookdb-covers",
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      console.log(uploadResult);
+      console.log(uploadResult.url);
+
+      book.cover = uploadResult.url;
+    } else {
+      book.cover =
+        "https://res.cloudinary.com/dxmcu2wdw/image/upload/v1747161472/no-image.png";
+    }
+
     // const data = await Notes.create({
     //   title,
     //   slug,
@@ -150,14 +164,20 @@ app.put("/api/books/", upload.single("cover"), async (req, res) => {
     //   genres,
     //   language,
     // } = req.body;
-    const uploadResult = await cloudinary.uploader
-      .upload(req.file.path, {
-        public_id: req.file.filename.replace(req.file.originalname, "cover"),
-        folder: "ibookdb-covers",
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+
+    // if (req.file) {
+    //   const uploadResult = await cloudinary.uploader
+    //     .upload(req.file.path, {
+    //       public_id: req.file.filename.replace(req.file.originalname, "cover"),
+    //       folder: "ibookdb-covers",
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+
+    //   console.log(uploadResult);
+    //   console.log(uploadResult.url);
+    // }
 
     console.log(req.body);
     console.log(req.file);
@@ -171,10 +191,28 @@ app.put("/api/books/", upload.single("cover"), async (req, res) => {
       genres: req.body.genres,
       language: req.body.language,
     };
+
+    // if (req.file) {
+    //   book.cover = req.file.filename;
+    //   // book.cover = uploadResult.url;
+    // }
+
     if (req.file) {
-      // book.cover = req.file.filename;
+      const uploadResult = await cloudinary.uploader
+        .upload(req.file.path, {
+          public_id: req.file.filename.replace(req.file.originalname, "cover"),
+          folder: "ibookdb-covers",
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      console.log(uploadResult);
+      console.log(uploadResult.url);
+
       book.cover = uploadResult.url;
     }
+
     // const data = await Notes.create({
     //   title,
     //   slug,
