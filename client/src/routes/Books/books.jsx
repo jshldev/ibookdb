@@ -10,6 +10,7 @@ function Books() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedGenre, setSelectedGenre] = useState("");
+  const [uniqueGenres, setUniqueGenres] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,6 +27,16 @@ function Books() {
         }
         const data = await response.json();
         setData(data);
+        console.log("data:");
+        console.log(data);
+        const all_genres_array = data.map(({ genres }) => genres);
+        console.log(all_genres_array);
+
+        const flatArray = all_genres_array.flat(); // Flatten the array of arrays into a single array
+        const uniqueSet = new Set(flatArray); // Create a Set to store unique values
+        const removedEmptySet = [...uniqueSet].filter((n) => n); // Convert the Set back to an array //Remove empty elements from an array
+        console.log(removedEmptySet);
+        setUniqueGenres(removedEmptySet);
         setIsLoading(false);
       } catch (error) {
         console.log(error);
@@ -35,6 +46,10 @@ function Books() {
     };
     fetchData();
   }, [selectedGenre]);
+
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
 
   return (
     <div>
@@ -47,13 +62,16 @@ function Books() {
         <label>Genres</label>
         <select onChange={(e) => setSelectedGenre(e.target.value)}>
           <option value="">All</option>
-          <option value="adventure">Adventure</option>
+          {/* <option value="adventure">Adventure</option>
           <option value="crime">Crime</option>
           <option value="fiction">Fiction</option>
           <option value="food">Food</option>
           <option value="romance">Romance</option>
           <option value="science">Science</option>
-          <option value="thriller">Thriller</option>
+          <option value="thriller">Thriller</option> */}
+          {uniqueGenres.map((genre) => (
+            <option value={genre}>{capitalizeFirstLetter(genre)}</option>
+          ))}
           <option value="other">Other</option>
         </select>
       </div>
