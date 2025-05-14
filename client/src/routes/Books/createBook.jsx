@@ -110,7 +110,7 @@ function CreateBook() {
     formData.append("publishYear", publishYear);
     formData.append("language", language);
     // formData.append("coverURL", coverURL);
-    formData.append("coverURL", coverImageURL); // 使用從 Cloudinary 獲取的 URL
+    formData.append("coverURL", coverImageURL); // 使用從 Cloudinary 獲取的 URL //Thank you Grok!
 
     for (const pair of formData.entries()) {
       console.log(pair[0], pair[1]);
