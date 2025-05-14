@@ -58,21 +58,25 @@ app.get("/api/books/:slug", async (req, res) => {
 
 //Create a book
 //multer for upload image
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "covers/");
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    // cb(null, uniqueSuffix + "-" + file.originalname);
-    cb(null, uniqueSuffix + "-" + file.originalname);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "covers/");
+//   },
+//   filename: function (req, file, cb) {
+//     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+//     // cb(null, uniqueSuffix + "-" + file.originalname);
+//     cb(null, uniqueSuffix + "-" + file.originalname);
+//   },
+// });
 
-const upload = multer({ storage: storage });
+// const upload = multer({ storage: storage });
+
+//multer for formData , if no multer, need to send JSON
+const upload = multer();
 
 //Create a book
-app.post("/api/books/", upload.single("cover"), async (req, res) => {
+// app.post("/api/books/", upload.single("cover"), async (req, res) => { //use multer , but vercel cannot handle multer bandwidth
+app.post("/api/books/", upload.none(), async (req, res) => {
   try {
     // const {
     //   title,
@@ -89,7 +93,7 @@ app.post("/api/books/", upload.single("cover"), async (req, res) => {
     console.log(datefns.format(now, "yyyy-MM-dd h:mm:ss a"));
 
     console.log(req.body);
-    console.log(req.file);
+    // console.log(req.file);
     const book = new Books({
       title: req.body.title,
       slug: req.body.slug,
@@ -105,30 +109,35 @@ app.post("/api/books/", upload.single("cover"), async (req, res) => {
       //   ? uploadResult.url
       //   : "https://res.cloudinary.com/dxmcu2wdw/image/upload/v1747161472/no-image.png",
 
+      cover: req.body.coverURL
+        ? req.body.coverURL
+        : "https://res.cloudinary.com/dxmcu2wdw/image/upload/v1747161472/no-image.png",
       createDate: Date.now(),
       // createDate: datefns.format(now, "yyyy-MM-dd h:mm:ss a"),
     });
 
     // const uploadResult = null;
 
-    if (req.file) {
-      const uploadResult = await cloudinary.uploader
-        .upload(req.file.path, {
-          public_id: req.file.filename.replace(req.file.originalname, "cover"),
-          folder: "ibookdb-covers",
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    //this path = multer + cloudinary
+    // if (req.file) {
+    //   const uploadResult = await cloudinary.uploader
+    //     .upload(req.file.path, {
+    //       public_id: req.file.filename.replace(req.file.originalname, "cover"),
+    //       folder: "ibookdb-covers",
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
 
-      console.log(uploadResult);
-      console.log(uploadResult.url);
+    //   console.log(uploadResult);
+    //   console.log(uploadResult.url);
 
-      book.cover = uploadResult.url;
-    } else {
-      book.cover =
-        "https://res.cloudinary.com/dxmcu2wdw/image/upload/v1747161472/no-image.png";
-    }
+    //   book.cover = uploadResult.url;
+    // } else {
+    //   book.cover =
+    //     "https://res.cloudinary.com/dxmcu2wdw/image/upload/v1747161472/no-image.png";
+    // }
+    //this path = multer + cloudinary
 
     // const data = await Notes.create({
     //   title,
@@ -151,7 +160,10 @@ app.post("/api/books/", upload.single("cover"), async (req, res) => {
 });
 
 //Edit a book
-app.put("/api/books/", upload.single("cover"), async (req, res) => {
+// app.put("/api/books/", upload.single("cover"), async (req, res) => {
+//use multer , but vercel cannot handle multer bandwidth
+
+app.put("/api/books/", upload.none(), async (req, res) => {
   try {
     const bookID = req.body.bookID;
     // const {
@@ -165,6 +177,32 @@ app.put("/api/books/", upload.single("cover"), async (req, res) => {
     //   language,
     // } = req.body;
 
+    const now = new Date(Date.now());
+    console.log(datefns.format(now, "yyyy-MM-dd h:mm:ss a"));
+
+    console.log(req.body);
+    // console.log(req.file);
+
+    const book = {
+      title: req.body.title,
+      slug: req.body.slug,
+      description: req.body.description,
+      stars: req.body.stars,
+      author: req.body.author,
+      publishYear: req.body.publishYear,
+      genres: req.body.genres,
+      language: req.body.language,
+      cover: req.body.coverURL
+        ? req.body.coverURL
+        : "https://res.cloudinary.com/dxmcu2wdw/image/upload/v1747161472/no-image.png",
+    };
+
+    // if (req.file) {
+    //   book.cover = req.file.filename;
+    //   // book.cover = uploadResult.url;
+    // }
+
+    //this path = multer + cloudinary
     // if (req.file) {
     //   const uploadResult = await cloudinary.uploader
     //     .upload(req.file.path, {
@@ -177,41 +215,10 @@ app.put("/api/books/", upload.single("cover"), async (req, res) => {
 
     //   console.log(uploadResult);
     //   console.log(uploadResult.url);
+
+    //   book.cover = uploadResult.url;
     // }
-
-    console.log(req.body);
-    console.log(req.file);
-    const book = {
-      title: req.body.title,
-      slug: req.body.slug,
-      description: req.body.description,
-      stars: req.body.stars,
-      author: req.body.author,
-      publishYear: req.body.publishYear,
-      genres: req.body.genres,
-      language: req.body.language,
-    };
-
-    // if (req.file) {
-    //   book.cover = req.file.filename;
-    //   // book.cover = uploadResult.url;
-    // }
-
-    if (req.file) {
-      const uploadResult = await cloudinary.uploader
-        .upload(req.file.path, {
-          public_id: req.file.filename.replace(req.file.originalname, "cover"),
-          folder: "ibookdb-covers",
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
-      console.log(uploadResult);
-      console.log(uploadResult.url);
-
-      book.cover = uploadResult.url;
-    }
+    //this path = multer + cloudinary
 
     // const data = await Notes.create({
     //   title,

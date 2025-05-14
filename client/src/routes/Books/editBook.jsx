@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import NoImage from "../../assets/no-image.png";
+import axios from "axios";
 
 function EditBook() {
   const baseURL = import.meta.env.VITE_SERVER_URL;
@@ -9,6 +10,8 @@ function EditBook() {
   //   console.log(import.meta.env.VITE_SERVER_URL);
   const urlSLUG = useParams();
   const goURL = `${apiURL}${urlSLUG.slug}`;
+  const cloud_name = import.meta.env.VITE_CLOUDINARY_NAME;
+  const preset_name = import.meta.env.VITE_CLOUDINARY_PRESET_NAME;
 
   const [bookID, setBookID] = useState("");
   const [title, setTitle] = useState("");
@@ -22,6 +25,10 @@ function EditBook() {
   const [cover, setCover] = useState(null);
   const [submitted, setSubmitted] = useState("");
   const [image, setImage] = useState("");
+  const [coverURL, setCoverURL] = useState("");
+  const [uploadFile, setUploadFile] = useState(null);
+  const [titleLabel, setTitleLabel] = useState("");
+  const [slugLabel, setSlugLabel] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,21 +42,23 @@ function EditBook() {
         setBookID(data._id);
         setTitle(data.title);
         setSlug(data.slug);
-        setStars(data.stars);
-        setDescription(data.description);
-        setGenres(data.genres);
-        setAuthor(data.author);
-        setPublishYear(data.publishYear);
-        setLanguage(data.language);
-        setCover(data.cover);
-        setData(data);
-        setIsLoading(false);
+        setStars(data.stars) || "";
+        setDescription(data.description || ""); //為所有欄位提供預設值，避免 undefined //Thank you Grok!
+        setGenres(data.genres || []); //formData + multer + express 傳undefined 會500 Internal Server Error //Thank you Grok!
+        setAuthor(data.author || "");
+        setPublishYear(data.publishYear || "");
+        setLanguage(data.language || "");
+        setCover(data.cover || "");
+        // setData(data);
+        // setIsLoading(false);
         console.log(data.stars);
+        console.log("data:");
+        console.log(data);
         setStars(data.stars);
       } catch (error) {
         console.log(error);
-        setError("Error when fetching data.");
-        setIsLoading(false);
+        // setError("Error when fetching data.");
+        // setIsLoading(false);
       }
     };
     fetchData();
@@ -57,7 +66,40 @@ function EditBook() {
 
   const updateBook = async (e) => {
     e.preventDefault();
+    title.trim() === ""
+      ? setTitleLabel("*(This field is required)")
+      : setTitleLabel("");
+    slug.trim() === ""
+      ? setSlugLabel("*(This field is required)")
+      : setSlugLabel("");
+    if (title.trim() === "" || slug.trim() === "") {
+      return;
+    }
+
     console.table([title, slug, author, publishYear, language, cover, image]);
+
+    let coverImageURL = "";
+    // if (cover) {
+    //   coverImageURL = cover;
+    // }
+
+    // 如果有上傳圖片，則上傳到 Cloudinary
+    if (uploadFile) {
+      const upload_image_formData = new FormData();
+      upload_image_formData.append("file", uploadFile);
+      upload_image_formData.append("upload_preset", preset_name);
+
+      // 等待 Cloudinary 上傳完成
+      const res = await axios.post(
+        `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`,
+        upload_image_formData
+      );
+
+      coverImageURL = res.data.secure_url; // 直接使用回應中的 URL
+      setCoverURL(coverImageURL); // 可選：更新狀態以用於 UI 顯示
+      console.log("Cloudinary response:", res.data);
+      console.log("coverImageURL:", coverImageURL);
+    }
 
     const formData = new FormData();
     formData.append("bookID", bookID);
@@ -70,10 +112,13 @@ function EditBook() {
     formData.append("publishYear", publishYear);
     formData.append("language", language);
 
-    if (cover) {
-      formData.append("cover", cover);
+    formData.append("coverURL", coverImageURL); // 使用從 Cloudinary 獲取的 URL //Thank you Grok!
+    // if (cover) {
+    //   formData.append("cover", cover);
+    // }
+    for (const pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
     }
-
     try {
       const response = await fetch(apiURL, {
         method: "PUT",
@@ -121,10 +166,12 @@ function EditBook() {
 
   const onImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
+      // setImage(URL.createObjectURL(e.target.files[0]));
+      // setCover(e.target.files[0]);
+      // console.log(cover);
+      // console.log(image);
       setImage(URL.createObjectURL(e.target.files[0]));
-      setCover(e.target.files[0]);
-      console.log(cover);
-      console.log(image);
+      setUploadFile(e.target.files[0]);
     }
   };
 
@@ -157,6 +204,7 @@ function EditBook() {
           <div className="col-2">
             <div>
               <label>Title</label>
+              <label className="redLabel">{titleLabel}</label>
               <input
                 type="text"
                 value={title}
@@ -166,6 +214,7 @@ function EditBook() {
 
             <div>
               <label>URL Slug</label>
+              <label className="redLabel">{slugLabel}</label>
               <input
                 type="text"
                 value={slug}

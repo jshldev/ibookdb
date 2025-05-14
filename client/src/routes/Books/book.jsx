@@ -63,7 +63,7 @@ function Book() {
 
       if (response.ok) {
         setBookID("");
-        navigate("/");
+        navigate("/books");
       }
     } catch (error) {
       console.log("Failed to delete data.");
