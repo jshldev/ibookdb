@@ -80,7 +80,10 @@ function Book() {
             ↩ Back
           </Link>
           {/* <img src={`${baseURL}/covers/${data?.cover}`} alt={data?.title} /> */}
-          <img src={data?.cover} alt={data?.title} />
+          <img
+            src={data.cover ? data.cover : "../src/assets/no-image.png"}
+            alt={data?.title}
+          />
           <Link to={`/editbook/${data.slug}`} className="linkButton">
             🖍 Edit
           </Link>

@@ -111,7 +111,8 @@ app.post("/api/books/", upload.none(), async (req, res) => {
 
       cover: req.body.coverURL
         ? req.body.coverURL
-        : "https://res.cloudinary.com/dxmcu2wdw/image/upload/v1747161472/no-image.png",
+        : // : "https://res.cloudinary.com/dxmcu2wdw/image/upload/v1747161472/no-image.png",
+          "",
       createDate: Date.now(),
       // createDate: datefns.format(now, "yyyy-MM-dd h:mm:ss a"),
     });
@@ -194,7 +195,8 @@ app.put("/api/books/", upload.none(), async (req, res) => {
       language: req.body.language,
       cover: req.body.coverURL
         ? req.body.coverURL
-        : "https://res.cloudinary.com/dxmcu2wdw/image/upload/v1747161472/no-image.png",
+        : // : "https://res.cloudinary.com/dxmcu2wdw/image/upload/v1747161472/no-image.png",
+          "",
     };
 
     // if (req.file) {
