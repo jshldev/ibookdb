@@ -101,7 +101,7 @@ app.post("/api/books/", upload.none(), async (req, res) => {
       stars: req.body.stars,
       author: req.body.author,
       publishYear: req.body.publishYear,
-      genres: req.body.genres,
+      genres: req.body.genres.map((str) => str.toLowerCase()),
       language: req.body.language,
       // cover: req.file ? req.file.filename : "no-image.png",
 
@@ -191,7 +191,7 @@ app.put("/api/books/", upload.none(), async (req, res) => {
       stars: req.body.stars,
       author: req.body.author,
       publishYear: req.body.publishYear,
-      genres: req.body.genres,
+      genres: req.body.genres.map((str) => str.toLowerCase()),
       language: req.body.language,
       cover: req.body.coverURL
         ? req.body.coverURL

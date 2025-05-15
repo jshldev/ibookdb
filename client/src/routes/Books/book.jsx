@@ -93,6 +93,10 @@ function Book() {
     }
   };
 
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
   return (
     <div>
       <h2>Book</h2>
@@ -125,7 +129,7 @@ function Book() {
           <p>Genre:</p>
           <ul>
             {data?.genres?.map((genre, index) => (
-              <li key={index}>{genre}</li>
+              <li key={index}>{capitalizeFirstLetter(genre)}</li>
             ))}
           </ul>
           {/* formatInTimeZone(date, 'Asia/Hong_Kong', 'yyyy-MM-dd HH:mm:ss zzz') */}

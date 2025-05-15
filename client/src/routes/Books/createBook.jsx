@@ -107,7 +107,7 @@ function CreateBook() {
     // formData.append("genres", genres);
     //formData不能直接傳送array
     genres.forEach((genre) => {
-      formData.append("genres[]", genre);
+      formData.append("genres[]", genre.toLowerCase());
     });
     // formData.append("cover", cover);
     formData.append("author", author);
