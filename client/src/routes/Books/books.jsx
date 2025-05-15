@@ -30,14 +30,18 @@ function Books() {
         setData(data);
         console.log("data:");
         console.log(data);
-        const all_genres_array = data.map(({ genres }) => genres);
-        console.log(all_genres_array);
 
-        const flatArray = all_genres_array.flat(); // Flatten the array of arrays into a single array
-        const uniqueSet = new Set(flatArray); // Create a Set to store unique values
-        const removedEmptySet = [...uniqueSet].filter((n) => n); // Convert the Set back to an array //Remove empty elements from an array
-        console.log(removedEmptySet);
-        setUniqueGenres(removedEmptySet);
+        if (!selectedGenre) {
+          const all_genres_array = data.map(({ genres }) => genres);
+          console.log(all_genres_array);
+
+          const flatArray = all_genres_array.flat(); // Flatten the array of arrays into a single array
+          const uniqueSet = new Set(flatArray); // Create a Set to store unique values
+          const removedEmptySet = [...uniqueSet].filter((n) => n); // Convert the Set back to an array //Remove empty elements from an array
+          console.log(removedEmptySet);
+          setUniqueGenres(removedEmptySet);
+        }
+
         setIsLoading(false);
       } catch (error) {
         console.log(error);

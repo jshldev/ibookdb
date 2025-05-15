@@ -5,8 +5,8 @@ import Upload from "./upload";
 function Home() {
   return (
     <div>
-      <h2>home page</h2>
-      {/* <Books /> */}
+      {/* <h2>home page</h2> */}
+      <Books />
       {/* <Upload /> */}
     </div>
   );
