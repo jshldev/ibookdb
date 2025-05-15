@@ -4,6 +4,7 @@ import Stars from "./stars";
 import { format } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import NoImage from "../../assets/no-image.png";
+import Swal from "sweetalert2";
 
 // const datefns = require("date-fns");
 
@@ -54,6 +55,27 @@ function Book() {
   }, []);
   // console.log(lastModify);
 
+  function deleteConfirm(e) {
+    Swal.fire({
+      title: "Are you sure to delete this book?",
+      // text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Book has been deleted.",
+          // text: "Book has been deleted.",
+          icon: "success",
+        });
+        deleteBook(e);
+      }
+    });
+  }
+
   const deleteBook = async (e) => {
     e.preventDefault();
 
@@ -86,7 +108,7 @@ function Book() {
             🖍 Edit
           </Link>
           <br></br>
-          <button onClick={deleteBook} className="button-24">
+          <button onClick={deleteConfirm} className="button-24">
             ❌Delete This Book
           </button>
         </div>

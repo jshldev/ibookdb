@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 function Upload() {
   const cloud_name = import.meta.env.VITE_CLOUDINARY_NAME;
@@ -16,7 +17,7 @@ function Upload() {
     // formData.append("eager", "c_pad,h_300,w_400");
     axios
       .post(
-        `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload/`,
+        `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload/w_500,h_300,c_fit/`,
         formData
       )
       .then((res) => {
@@ -25,12 +26,33 @@ function Upload() {
       })
       .catch((err) => console.log(err));
   }
+
+  function handleClick() {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+      }
+    });
+  }
   return (
     <div>
       <h2>upload image</h2>
       {/* <Books /> */}
       <input type="file" onChange={handleFile}></input>
       <img src={image} alt="uploaded image"></img>
+      <button onClick={handleClick}>Click me</button>
     </div>
   );
 }
