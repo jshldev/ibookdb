@@ -10,10 +10,9 @@ function Upload2() {
   const [image, setImage] = useState();
   const [uploadFile, setUploadFile] = useState(null);
 
-  let coverImageURL = "";
   async function handleFile(event) {
     setUploadFile(event.target.files[0]);
-    await compressBookImageAndUpload(event.target.files[0]);
+    setImage(await compressBookImageAndUpload(event.target.files[0]));
     // const res = await compressBookImageAndUpload(event.target.files[0]);
     // console.log(res.compressedFile);
     // console.log(res.filename);
@@ -43,32 +42,33 @@ function Upload2() {
       ); // write your own logic
       console.log("uploadToServerRespond");
       console.log(uploadToServerRespond);
-      setImage(uploadToServerRespond);
+      // setImage(uploadToServerRespond);
+      return uploadToServerRespond;
       // return { compressedFile: compressedFile, filename: file.name };
     } catch (error) {
       console.log(error);
     }
   }
 
-  function uploadToServer(file, filename) {
+  async function uploadToServer(file, filename) {
     if (file) {
       const formData = new FormData();
       formData.append("file", file, filename);
       formData.append("upload_preset", preset_name);
-      axios
-        .post(
+      try {
+        const res = await axios.post(
           `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload/`,
           formData
-        )
-        .then((res) => {
-          console.log(res);
-          coverImageURL = res.data.secure_url; // 直接使用回應中的 URL
-          // setCoverURL(coverImageURL); // 可選：更新狀態以用於 UI 顯示
-          console.log("Cloudinary response:", res.data);
-          console.log("coverImageURL:", coverImageURL);
-          return coverImageURL;
-        })
-        .catch((err) => console.log(err));
+        );
+        console.log(res);
+        const coverImageURL = res.data.secure_url; // Local variable, no global
+        console.log("Cloudinary response:", res.data);
+        console.log("coverImageURL:", coverImageURL);
+        return coverImageURL; // Return the URL to the caller
+      } catch (err) {
+        console.error(err);
+        throw err; // Rethrow or handle the error as needed
+      }
     }
   }
 

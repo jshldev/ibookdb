@@ -23,5 +23,3 @@ dist-ssr
 *.sln
 *.sw?
 
-src/routes/Home/upload.jsx
-src/routes/Home/upload2.jsx

@@ -3,6 +3,7 @@ import NoImage from "../../assets/no-image.png";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useEffect } from "react";
+import imageCompression from "browser-image-compression";
 
 function CreateBook() {
   const baseURL = import.meta.env.VITE_SERVER_URL;
@@ -68,25 +69,36 @@ function CreateBook() {
     //   .catch((err) => console.log(err));
     //   my version
 
+    //原檔上傳
+    // let coverImageURL = "";
+
+    // // 如果有上傳圖片，則上傳到 Cloudinary
+    // if (uploadFile) {
+    //   const upload_image_formData = new FormData();
+    //   upload_image_formData.append("file", uploadFile);
+    //   upload_image_formData.append("upload_preset", preset_name);
+
+    //   // 等待 Cloudinary 上傳完成
+    //   const res = await axios.post(
+    //     `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`,
+    //     upload_image_formData
+    //   );
+
+    //   coverImageURL = res.data.secure_url; // 直接使用回應中的 URL
+    //   setCoverURL(coverImageURL); // 可選：更新狀態以用於 UI 顯示
+    //   console.log("Cloudinary response:", res.data);
+    //   console.log("coverImageURL:", coverImageURL);
+    // }
+    //原檔上傳
+
+    //壓縮上傳
     let coverImageURL = "";
-
-    // 如果有上傳圖片，則上傳到 Cloudinary
     if (uploadFile) {
-      const upload_image_formData = new FormData();
-      upload_image_formData.append("file", uploadFile);
-      upload_image_formData.append("upload_preset", preset_name);
-
-      // 等待 Cloudinary 上傳完成
-      const res = await axios.post(
-        `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`,
-        upload_image_formData
-      );
-
-      coverImageURL = res.data.secure_url; // 直接使用回應中的 URL
-      setCoverURL(coverImageURL); // 可選：更新狀態以用於 UI 顯示
-      console.log("Cloudinary response:", res.data);
-      console.log("coverImageURL:", coverImageURL);
+      const compressedImageURL = await compressBookImageAndUpload(uploadFile);
+      setCoverURL(compressedImageURL);
+      coverImageURL = compressedImageURL;
     }
+    //壓縮上傳
 
     console.table([
       title,
@@ -197,6 +209,61 @@ function CreateBook() {
   // useEffect(() => {
   //   console.log("coverURL updated:", coverURL);
   // }, [coverURL]);
+
+  //壓縮上傳
+  async function compressBookImageAndUpload(file) {
+    console.log("File instanceof Blob", file instanceof Blob); // true
+    const options = {
+      // maxSizeMB: 0.8,
+      maxWidthOrHeight: 500,
+      initialQuality: 0.8,
+    };
+    try {
+      const compressedFile = await imageCompression(file, options);
+      console.log(
+        "compressedFile instanceof Blob",
+        compressedFile instanceof Blob
+      ); // true
+      console.log(
+        `compressedFile size ${compressedFile.size / 1024 / 1024} MB`
+      ); // smaller than maxSizeMB
+
+      const uploadToServerRespond = await uploadToServer(
+        compressedFile,
+        file.name
+      ); // write your own logic
+      console.log("uploadToServerRespond");
+      console.log(uploadToServerRespond);
+      // setImage(uploadToServerRespond);
+      return uploadToServerRespond;
+      // return { compressedFile: compressedFile, filename: file.name };
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  //for壓縮上傳
+  async function uploadToServer(file, filename) {
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file, filename);
+      formData.append("upload_preset", preset_name);
+      try {
+        const res = await axios.post(
+          `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload/`,
+          formData
+        );
+        console.log(res);
+        const coverImageURL = res.data.secure_url; // Local variable, no global
+        console.log("Cloudinary response:", res.data);
+        console.log("coverImageURL:", coverImageURL);
+        return coverImageURL; // Return the URL to the caller
+      } catch (err) {
+        console.error(err);
+        throw err; // Rethrow or handle the error as needed
+      }
+    }
+  }
 
   return (
     <div>
