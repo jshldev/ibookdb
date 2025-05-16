@@ -5,18 +5,13 @@ import Swal from "sweetalert2";
 import Compressor from "compressorjs";
 import imageCompression from "browser-image-compression";
 
-function Upload() {
+function Upload2() {
   const cloud_name = import.meta.env.VITE_CLOUDINARY_NAME;
   const preset_name = import.meta.env.VITE_CLOUDINARY_PRESET_NAME;
   const [image, setImage] = useState();
 
   async function handleFile(event) {
     const file = event.target.files[0];
-    // const formData = new FormData();
-    // formData.append("file", file);
-    // formData.append("upload_preset", preset_name);
-    // formData.append("eager", "w_160,h_100,c_crop");
-    // formData.append("eager", "c_pad,h_300,w_400");
 
     const options = {
       // maxSizeMB: 0.8,
@@ -39,7 +34,30 @@ function Upload() {
     }
   }
 
+async function compressBookImageAndUpload(file) {
+    const options = {
+      // maxSizeMB: 0.8,
+      maxWidthOrHeight: 500,
+      initialQuality: 0.8,
+    };
+    try {
+      const compressedFile = await imageCompression(file, options);
+      console.log(
+        "compressedFile instanceof Blob",
+        compressedFile instanceof Blob
+      ); // true
+      console.log(
+        `compressedFile size ${compressedFile.size / 1024 / 1024} MB`
+      ); // smaller than maxSizeMB
+
+      uploadToServer(compressedFile, file.name); // write your own logic
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   function uploadToServer(file, filename) {
+    if (uploadFile) {
     const formData = new FormData();
     formData.append("file", file, filename);
     formData.append("upload_preset", preset_name);
@@ -50,30 +68,17 @@ function Upload() {
       )
       .then((res) => {
         console.log(res);
-        setImage(res.data.secure_url);
+        coverImageURL = res.data.secure_url; // 直接使用回應中的 URL
+      setCoverURL(coverImageURL); // 可選：更新狀態以用於 UI 顯示
+      console.log("Cloudinary response:", res.data);
+      console.log("coverImageURL:", coverImageURL);
+
       })
       .catch((err) => console.log(err));
+    
   }
 
-  function handleClick() {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          icon: "success",
-        });
-      }
-    });
-  }
+
 
   return (
     <div>
@@ -81,9 +86,8 @@ function Upload() {
       {/* <Books /> */}
       <input type="file" onChange={handleFile}></input>
       <img src={image} alt="uploaded image"></img>
-      <button onClick={handleClick}>Click me</button>
     </div>
   );
 }
 
-export default Upload;
+export default Upload2;
