@@ -8,6 +8,7 @@ const BookSchema = new Schema({
   },
   slug: {
     type: String,
+    required: true,
   },
   description: {
     type: String,

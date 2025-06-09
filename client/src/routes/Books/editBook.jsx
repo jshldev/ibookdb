@@ -128,7 +128,7 @@ function EditBook() {
     }
     try {
       const response = await fetch(apiURL, {
-        method: "PUT",
+        method: "PATCH",
         body: formData,
       });
 
