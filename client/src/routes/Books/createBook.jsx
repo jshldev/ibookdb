@@ -5,6 +5,8 @@ import axios from "axios";
 import { useEffect } from "react";
 import imageCompression from "browser-image-compression";
 
+import { useAuthContext } from "../../hooks/useAuthContext";
+
 function CreateBook() {
   const baseURL = import.meta.env.VITE_SERVER_URL;
   const apiURL = `${baseURL}/api/books/`;
@@ -28,6 +30,8 @@ function CreateBook() {
   const [uploadFile, setUploadFile] = useState(null);
   const [titleLabel, setTitleLabel] = useState("");
   const [slugLabel, setSlugLabel] = useState("");
+
+  const { user } = useAuthContext();
 
   const createBook = async (e) => {
     e.preventDefault();
@@ -134,6 +138,7 @@ function CreateBook() {
     try {
       const response = await fetch(apiURL, {
         method: "POST",
+        headers: { Authorization: `Bearer ${user.token}` },
         body: formData,
       });
 

@@ -3,6 +3,8 @@ import { Link, useParams } from "react-router-dom";
 import NoImage from "../../assets/no-image.png";
 import axios from "axios";
 
+import { useAuthContext } from "../../hooks/useAuthContext";
+
 function EditBook() {
   const baseURL = import.meta.env.VITE_SERVER_URL;
   const apiURL = `${baseURL}/api/books/`;
@@ -29,6 +31,8 @@ function EditBook() {
   const [uploadFile, setUploadFile] = useState(null);
   const [titleLabel, setTitleLabel] = useState("");
   const [slugLabel, setSlugLabel] = useState("");
+
+  const { user } = useAuthContext();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -129,6 +133,7 @@ function EditBook() {
     try {
       const response = await fetch(apiURL, {
         method: "PATCH",
+        headers: { Authorization: `Bearer ${user.token}` },
         body: formData,
       });
 

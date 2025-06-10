@@ -9,6 +9,8 @@ const {
   deleteBook,
 } = require("../controllers/booksController");
 
+const adminAuth = require("../middleware/adminAuth");
+
 const multer = require("multer");
 const upload = multer();
 
@@ -20,14 +22,14 @@ router.get("/:slug", getBook);
 
 //Create a book
 // app.post("/api/books/", upload.single("cover"), async (req, res) => { //use multer , but vercel cannot handle multer bandwidth
-router.post("/", upload.none(), createBook);
+router.post("/", adminAuth, upload.none(), createBook);
 
 //Edit a book
 // app.put("/api/books/", upload.single("cover"), async (req, res) => {
 //use multer , but vercel cannot handle multer bandwidth
-router.patch("/", upload.none(), editBook);
+router.patch("/", adminAuth, upload.none(), editBook);
 
 //Delete a book by ID
-router.delete("/:id", deleteBook);
+router.delete("/:id", adminAuth, deleteBook);
 
 module.exports = router;

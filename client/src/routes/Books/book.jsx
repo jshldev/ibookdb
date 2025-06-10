@@ -86,6 +86,7 @@ function Book() {
     try {
       const response = await fetch(apiURL + bookID, {
         method: "DELETE",
+        headers: { Authorization: `Bearer ${user.token}` },
       });
 
       if (response.ok) {
