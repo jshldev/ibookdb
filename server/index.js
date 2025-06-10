@@ -6,7 +6,9 @@ const cors = require("cors");
 const express = require("express");
 const connectDB = require("./connectDB");
 const Books = require("./models/Books");
+
 const bookRoutes = require("./routes/books");
+const userRoutes = require("./routes/user");
 
 const multer = require("multer");
 const datefns = require("date-fns");
@@ -23,6 +25,7 @@ app.use("/covers", express.static("covers"));
 
 // routes
 app.use("/api/books/", bookRoutes);
+app.use("/api/user/", userRoutes);
 
 //fetch all books
 
