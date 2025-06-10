@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import NoImage from "../../assets/no-image.png";
 
+import { useAuthContext } from "../../hooks/useAuthContext";
+
 function Books() {
   const baseURL = import.meta.env.VITE_SERVER_URL;
   const apiURL = `${baseURL}/api/books/`;
@@ -12,6 +14,8 @@ function Books() {
   const [error, setError] = useState(null);
   const [selectedGenre, setSelectedGenre] = useState("");
   const [uniqueGenres, setUniqueGenres] = useState([]);
+
+  const { user } = useAuthContext();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,9 +63,13 @@ function Books() {
   return (
     <div>
       {/* <h2>Books</h2> */}
-      <Link to="/createbook" className="linkButton">
-        Create New Book
-      </Link>
+      {user
+        ? user.email === "ibdb_admin@gmail.com" && (
+            <Link to="/createbook" className="linkButton">
+              Create New Book
+            </Link>
+          )
+        : ""}
       {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
       <div className="filters">
         <label>Genres</label>

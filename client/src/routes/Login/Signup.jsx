@@ -25,7 +25,9 @@ function Signup() {
         onChange={(e) => setEmail(e.target.value)}
         value={email}
       />
-      <label>Password:</label>
+      <label>
+        Password: (at least 8 characters, 1 lowercase, 1 uppercase, 1 number)
+      </label>
       <input
         type="password"
         onChange={(e) => setPassword(e.target.value)}

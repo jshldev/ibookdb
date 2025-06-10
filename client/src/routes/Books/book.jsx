@@ -6,6 +6,8 @@ import { formatInTimeZone } from "date-fns-tz";
 import NoImage from "../../assets/no-image.png";
 import Swal from "sweetalert2";
 
+import { useAuthContext } from "../../hooks/useAuthContext";
+
 // const datefns = require("date-fns");
 
 function Book() {
@@ -22,6 +24,8 @@ function Book() {
   const goURL = `${apiURL}${urlSLUG.slug}`;
   console.log(goURL);
   const navigate = useNavigate();
+
+  const { user } = useAuthContext();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -108,13 +112,19 @@ function Book() {
           </Link>
           {/* <img src={`${baseURL}/covers/${data?.cover}`} alt={data?.title} /> */}
           <img src={data.cover ? data.cover : NoImage} alt={data?.title} />
-          <Link to={`/editbook/${data.slug}`} className="linkButton">
-            🖍 Edit
-          </Link>
-          <br></br>
-          <button onClick={deleteConfirm} className="button-24">
-            ❌Delete This Book
-          </button>
+          {user
+            ? user.email === "ibdb_admin@gmail.com" && (
+                <>
+                  <Link to={`/editbook/${data.slug}`} className="linkButton">
+                    🖍 Edit
+                  </Link>
+                  <br></br>
+                  <button onClick={deleteConfirm} className="button-24">
+                    ❌Delete This Book
+                  </button>
+                </>
+              )
+            : ""}
         </div>
 
         <div className="col-2 bookPage">
