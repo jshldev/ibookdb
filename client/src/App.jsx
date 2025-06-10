@@ -7,6 +7,8 @@ import Books from "./routes/Books/books";
 import Book from "./routes/Books/book";
 import CreateBook from "./routes/Books/createBook";
 import EditBook from "./routes/Books/editBook";
+import Login from "./routes/Login/Login";
+import Signup from "./routes/Login/Signup";
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           <Route path="/createbook" element={<CreateBook />}></Route>
           <Route path="/editbook/:slug" element={<EditBook />}></Route>
           <Route path="/about" element={<About />}></Route>
+          <Route path="/signup" element={<Signup />}></Route>
+          <Route path="/login" element={<Login />}></Route>
         </Routes>
         <Footer />
       </Router>
