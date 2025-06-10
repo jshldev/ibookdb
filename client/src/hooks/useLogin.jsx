@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { useAuthContext } from "./useAuthContext";
+import { useNavigate } from "react-router-dom";
 
 export const useLogin = () => {
   const baseURL = import.meta.env.VITE_SERVER_URL;
   const apiURL = `${baseURL}/api/user/login`;
+
+  const navigate = useNavigate();
 
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
@@ -33,6 +36,9 @@ export const useLogin = () => {
 
       // update loading state
       setIsLoading(false);
+
+      // back to home page
+      navigate("/books");
     }
   };
 
