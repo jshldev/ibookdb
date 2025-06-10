@@ -13,6 +13,8 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 function Book() {
   const baseURL = import.meta.env.VITE_SERVER_URL;
   const apiURL = `${baseURL}/api/books/`;
+  const apiAddFavBookURL = `${baseURL}/api/user/addfavbook/`;
+  const apiDelFavBookURL = `${baseURL}/api/user/delfavbook/`;
   const [data, setData] = useState([]);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -102,6 +104,69 @@ function Book() {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
+  const addFavBook = async () => {
+    // const formData = new FormData();
+    // formData.append("email", user.email);
+    // formData.append("bookID", bookID);
+    // for (const pair of formData.entries()) {
+    //   console.log(pair[0], pair[1]);
+    // }
+    const email = user.email;
+    try {
+      const response = await fetch(apiAddFavBookURL + bookID, {
+        method: "POST",
+        // headers: { Authorization: `Bearer ${user.token}` },
+        // body: formData,
+
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          bookID,
+        }),
+      });
+
+      console.log(apiAddFavBookURL);
+      console.log(bookID);
+      console.log(apiAddFavBookURL + bookID);
+      console.log(user.email);
+
+      if (response.ok) {
+        // setBookID("");
+        // navigate("/books");
+      }
+    } catch (error) {
+      console.log("Failed to delete data.");
+    }
+  };
+
+  const delFavBook = async () => {
+    const email = user.email;
+    try {
+      const response = await fetch(apiDelFavBookURL + bookID, {
+        method: "POST",
+        // headers: { Authorization: `Bearer ${user.token}` },
+
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          bookID,
+        }),
+      });
+
+      console.log(apiAddFavBookURL);
+      console.log(bookID);
+      console.log(apiAddFavBookURL + bookID);
+      console.log(user.email);
+
+      if (response.ok) {
+        // setBookID("");
+        // navigate("/books");
+      }
+    } catch (error) {
+      console.log("Failed to delete data.");
+    }
+  };
+
   return (
     <div>
       <h2>Book</h2>
@@ -113,6 +178,14 @@ function Book() {
           </Link>
           {/* <img src={`${baseURL}/covers/${data?.cover}`} alt={data?.title} /> */}
           <img src={data.cover ? data.cover : NoImage} alt={data?.title} />
+          <Link to="" onClick={addFavBook} className="linkButton">
+            ♥ Add to Favourite ♥
+          </Link>
+          <br />
+          <Link to="" onClick={delFavBook} className="linkButton">
+            ♥ Delete from Favourite ♥
+          </Link>
+          <br />
           {user
             ? user.email === "ibdb_admin@gmail.com" && (
                 <>

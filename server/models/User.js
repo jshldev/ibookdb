@@ -19,6 +19,9 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    favouriteBooks: {
+      type: Array,
+    },
   },
   { collection: "users" }
 );
@@ -76,5 +79,24 @@ userSchema.statics.login = async function (email, password) {
 
   return user;
 };
+
+// static add favouriteBooks method
+// userSchema.statics.addFavBook = async function (email, bookID) {
+//   if (!email || !bookID) {
+//     throw Error("All fields must be filled");
+//   }
+
+//   const user = await this.findOne({ email });
+//   if (!user) {
+//     throw Error("Incorrect user email");
+//   }
+
+//   const match = await bcrypt.compare(password, user.password);
+//   if (!match) {
+//     throw Error("Incorrect password");
+//   }
+
+//   return user;
+// };
 
 module.exports = mongoose.model("User", userSchema);

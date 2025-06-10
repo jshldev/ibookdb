@@ -24,6 +24,7 @@ function Header() {
           <>
             <span>Welcome! {user.name}, </span>
             <NavLink onClick={handleLogout}>Log-out</NavLink>
+            <NavLink to="/favouritebooks">Favourites</NavLink>
           </>
         )}
         <NavLink to="/">Home</NavLink>
