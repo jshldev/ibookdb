@@ -7,6 +7,7 @@ const {
   createBook,
   editBook,
   deleteBook,
+  addReview,
 } = require("../controllers/booksController");
 
 const adminAuth = require("../middleware/adminAuth");
@@ -31,5 +32,8 @@ router.patch("/", adminAuth, upload.none(), editBook);
 
 //Delete a book by ID
 router.delete("/:id", adminAuth, deleteBook);
+
+//Add review to a book by bookID
+router.patch("/addreview", addReview);
 
 module.exports = router;

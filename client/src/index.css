@@ -242,3 +242,9 @@ img {
 .button-24:active {
   opacity: 0.5;
 }
+
+.book-label {
+  font-weight: bold;
+  color: #005d93;
+  /* font-size: 1.2rem; */
+}

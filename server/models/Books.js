@@ -36,6 +36,9 @@ const BookSchema = new Schema(
       type: Date,
       defalut: Date.now(),
     },
+    reviews: {
+      type: [{ userEmail: String, userName: String, review: String }],
+    },
   },
   { collection: "books" }
 );

@@ -225,10 +225,59 @@ const deleteBook = async (req, res) => {
   }
 };
 
+//Add review to a book by bookID
+const addReview = async (req, res) => {
+  try {
+    const bookID = req.body.bookID;
+
+    const { email, name, review } = req.body;
+
+    const query = { _id: bookID };
+    const valueToAdd = { userEmail: email, userName: name, review: review };
+
+    if (!review) {
+      throw Error("Review fields must be filled");
+    }
+
+    // prevent spam: if review with same email and review, do not update
+    const result = await Books.findOneAndUpdate(
+      {
+        $and: [
+          query,
+          {
+            reviews: {
+              $not: {
+                $elemMatch: {
+                  userEmail: email,
+
+                  review: review,
+                },
+              },
+            },
+          },
+        ],
+      },
+      {
+        $addToSet: { reviews: valueToAdd },
+      }
+    );
+    if (result) {
+      console.log("Document updated successfully:", result);
+    } else {
+      console.log("Document not found.");
+    }
+
+    res.status(200).json({ bookID, email, name, review });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getAllBooks,
   getBook,
   createBook,
   editBook,
   deleteBook,
+  addReview,
 };
