@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import NoImage from "../../assets/no-image.png";
 
 import { useAuthContext } from "../../hooks/useAuthContext";
+
+import ReactPaginate from "react-paginate";
 
 function Books() {
   const baseURL = import.meta.env.VITE_SERVER_URL;
@@ -16,6 +18,16 @@ function Books() {
   const [uniqueGenres, setUniqueGenres] = useState([]);
 
   const { user } = useAuthContext();
+
+  const [page, setPage] = useState(0);
+  // const [filterData, setFilterData] = useState();
+  const bookPerPage = 10;
+
+  const filterData = useMemo(() => {
+    return data.filter((item, index) => {
+      return (index >= page * bookPerPage) & (index < (page + 1) * bookPerPage);
+    });
+  }, [data, page]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,6 +66,14 @@ function Books() {
       }
     };
     fetchData();
+
+    // setFilterData(
+    //   data.filter((item, index) => {
+    //     return (
+    //       (index >= page * bookPerPage) & (index < (page + 1) * bookPerPage)
+    //     );
+    //   })
+    // );
   }, [selectedGenre]);
 
   function capitalizeFirstLetter(string) {
@@ -93,17 +113,40 @@ function Books() {
       ) : error ? (
         <p>{error}</p>
       ) : (
-        <ul className="books">
-          {data.map((book) => (
-            <li key={book._id}>
-              <Link to={`/books/${book.slug}`}>
-                {/* <img src={`${baseURL}/covers/${book.cover}`} alt={book.title} /> */}
-                <img src={book.cover ? book.cover : NoImage} alt={book.title} />
-                <h4>{book.title}</h4>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul className="books">
+            {/* {data.map((book) => ( */}
+            {filterData &&
+              filterData.map((book) => (
+                <li key={book._id}>
+                  <Link to={`/books/${book.slug}`}>
+                    {/* <img src={`${baseURL}/covers/${book.cover}`} alt={book.title} /> */}
+                    <img
+                      src={book.cover ? book.cover : NoImage}
+                      alt={book.title}
+                    />
+                    <h4>{book.title}</h4>
+                  </Link>
+                </li>
+              ))}
+          </ul>
+          <ReactPaginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            breakLabel={"..."}
+            breakClassName={"break-me"}
+            pageCount={Math.ceil(data.length / bookPerPage)}
+            // marginPagesDisplayed={2} // Number of pages to show at the beginning and end
+            // pageRangeDisplayed={3} // Number of pages to show around the current page
+            onPageChange={(event) => {
+              setPage(event.selected);
+              console.log("page");
+              console.log(page);
+            }}
+            containerClassName={"pagination"}
+            activeClassName={"active"}
+          />
+        </>
       )}
     </div>
   );

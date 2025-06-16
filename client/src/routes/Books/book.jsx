@@ -305,7 +305,7 @@ function Book() {
           <div className="reviews-box">
             {user && (
               <div className="add-review">
-                <label>Leave a review:</label>
+                <label className="book-label">Leave a review:</label>
                 <textarea
                   rows="2"
                   cols="50"
@@ -316,7 +316,7 @@ function Book() {
               </div>
             )}
             <div className="reviews">
-              <p>Reviews by users:</p>
+              <label className="book-label">Reviews by users:</label>
               {reviews
                 .slice(-10)
                 .reverse()
