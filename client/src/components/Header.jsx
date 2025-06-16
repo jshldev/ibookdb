@@ -17,7 +17,7 @@ function Header() {
     <header>
       <Link to="/" className="logo">
         <img src={logo} alt="Logo" />
-        ibdb - Internet Book Database
+        <span className="header-title">ibdb - Internet Book Database</span>
       </Link>
       <nav>
         {user && (

@@ -18,6 +18,7 @@
   border-radius: 10px;
   background-color: rgba(255, 255, 255, 0.791);
   width: 70%;
+  max-width: 1300px;
   font-size: 1.1rem;
 }
 
@@ -220,7 +221,8 @@ img {
   line-height: 16px;
   min-height: 40px;
   outline: 0;
-  padding: 12px 14px;
+  /* padding: 12px 14px; */
+  padding: 0.9em 1.1em;
   text-align: center;
   text-rendering: geometricprecision;
   text-transform: none;
@@ -272,7 +274,7 @@ img {
   /* padding: 10px 15px; */
   padding: 0.5em 1.1em;
   background-color: white;
-  color: #007bff;
+  color: #316dae;
   border: 1px solid #ddd;
   border-radius: 5px;
   text-decoration: none;
@@ -280,20 +282,21 @@ img {
 }
 
 .pagination li a:hover {
-  background-color: #007bff;
+  background-color: #316dae;
   color: white;
   cursor: pointer;
 }
 
 .pagination li.active a {
-  background-color: #007bff;
+  background-color: #316dae;
   color: white;
-  border-color: #007bff;
+  border-color: #316dae;
 }
 
 .filters {
   display: flex;
   justify-content: space-between;
+  width: 100%;
 }
 
 .filters .filter-1 {
@@ -301,15 +304,16 @@ img {
   width: 20%;
 }
 .filters .filter-1 select {
-  width: 70;
-  min-width: 250px;
+  /* width: 70%; */
+  min-width: 150px;
 }
 .filters .filter-2 {
   display: flex;
   width: 25%;
 }
 .filters .filter-2 select {
-  width: 35%;
+  /* width: 35%; */
+  min-width: 80px;
 }
 
 .filters .filter-1 select,
@@ -326,4 +330,64 @@ img {
   /* -webkit-appearance: button;
   appearance: button; */
   outline: none;
+}
+
+@media (max-width: 600px) {
+  :root {
+    font-size: 12px;
+  }
+  #root {
+    width: 90%;
+  }
+  .header-title {
+    display: none;
+  }
+}
+
+@media (min-width: 601px) {
+  :root {
+    font-size: 13px;
+  }
+  #root {
+    width: 85%;
+  }
+  .header-title {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    font-size: 14px;
+  }
+  #root {
+    width: 80%;
+  }
+  .header-title {
+    display: none;
+  }
+}
+
+@media (min-width: 992px) {
+  :root {
+    font-size: 15px;
+  }
+  #root {
+    width: 80%;
+  }
+  .header-title {
+    display: none;
+  }
+}
+@media (min-width: 1200px) {
+  :root {
+    font-size: 16px;
+  }
+  #root {
+    width: 70%;
+  }
+  .header-title {
+    display: inline-block;
+    font-size: 1.3rem;
+  }
 }
