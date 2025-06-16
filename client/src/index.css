@@ -300,17 +300,19 @@ img {
 }
 
 .filters .filter-1 {
-  display: flex;
+  /* display: flex; */
   width: 60%;
+  display: block;
 }
 .filters .filter-1 select {
   /* width: 70%; */
   min-width: 150px;
 }
 .filters .filter-2 {
-  display: flex;
+  display: block;
   width: 40%;
-  justify-content: flex-end;
+  /* justify-content: flex-end; */
+  text-align: right;
 }
 .filters .filter-2 select {
   /* width: 35%; */
@@ -331,6 +333,12 @@ img {
   /* -webkit-appearance: button;
   appearance: button; */
   outline: none;
+}
+
+.HelloUserName {
+  font-weight: bold;
+  color: #082c38;
+  text-shadow: rgb(54, 118, 120) 0 0 0.5em;
 }
 
 @media (max-width: 600px) {

@@ -22,7 +22,7 @@ function Header() {
       <nav>
         {user && (
           <>
-            <span>Welcome! {user.name}, </span>
+            <span className="HelloUserName">Welcome! {user.name}, </span>
             <NavLink onClick={handleLogout}>Log-out</NavLink>
             <NavLink to="/favouritebooks">Favourites</NavLink>
           </>
