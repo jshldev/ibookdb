@@ -21,13 +21,14 @@ function Books() {
 
   const [page, setPage] = useState(0);
   // const [filterData, setFilterData] = useState();
-  const bookPerPage = 10;
+  // const bookPerPage = 10;
+  const [bookPerPage, setBookPerPage] = useState(10);
 
   const filterData = useMemo(() => {
     return data.filter((item, index) => {
       return (index >= page * bookPerPage) & (index < (page + 1) * bookPerPage);
     });
-  }, [data, page]);
+  }, [data, page, bookPerPage]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -92,21 +93,31 @@ function Books() {
         : ""}
       {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
       <div className="filters">
-        <label>Genres</label>
-        <select onChange={(e) => setSelectedGenre(e.target.value)}>
-          <option value="">All</option>
-          {/* <option value="adventure">Adventure</option>
-          <option value="crime">Crime</option>
-          <option value="fiction">Fiction</option>
-          <option value="food">Food</option>
-          <option value="romance">Romance</option>
-          <option value="science">Science</option>
-          <option value="thriller">Thriller</option> */}
-          {uniqueGenres.map((genre) => (
-            <option value={genre}>{capitalizeFirstLetter(genre)}</option>
-          ))}
-          <option value="other">Other</option>
-        </select>
+        <div className="filter-1">
+          <label className="book-label">Genres:</label>
+          <select onChange={(e) => setSelectedGenre(e.target.value)}>
+            <option value="">All</option>
+            {/* <option value="adventure">Adventure</option>*/}
+            {uniqueGenres.map((genre) => (
+              <option value={genre}>{capitalizeFirstLetter(genre)}</option>
+            ))}
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div className="filter-2">
+          <label className="book-label">Books Per Page:</label>
+          <select onChange={(e) => setBookPerPage(e.target.value)}>
+            <option value="5">5</option>
+            <option value="10" selected="selected">
+              10
+            </option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+            <option value="25">25</option>
+            <option value="30">30</option>
+          </select>
+        </div>
       </div>
       {isLoading ? (
         <p>Loading...</p>

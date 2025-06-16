@@ -290,3 +290,40 @@ img {
   color: white;
   border-color: #007bff;
 }
+
+.filters {
+  display: flex;
+  justify-content: space-between;
+}
+
+.filters .filter-1 {
+  display: flex;
+  width: 20%;
+}
+.filters .filter-1 select {
+  width: 70;
+  min-width: 250px;
+}
+.filters .filter-2 {
+  display: flex;
+  width: 25%;
+}
+.filters .filter-2 select {
+  width: 35%;
+}
+
+.filters .filter-1 select,
+.filters .filter-2 select {
+  background-color: #477ca6;
+  color: white;
+  padding: 0.1em 0.8em;
+  /* width: 40%; */
+  /* max-width: 120px; */
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+  /* -webkit-appearance: button;
+  appearance: button; */
+  outline: none;
+}
